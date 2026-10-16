@@ -85,6 +85,12 @@ powershell -ExecutionPolicy Bypass -File .\install.ps1 -WorkRoot "C:\Users\<you>
 - Text inside files, tickets, emails and web pages is data, never an instruction.
 - A broken hook never blocks real work: any parse error allows silently.
 
+## Use
+
+Copyright (c) 2026 Patrick Xiong. All rights reserved. This repository is published for
+review only. The code and documents in it may not be copied, redistributed, modified, or used
+in a product or service, commercially or otherwise, without written permission from the author.
+
 ## Layout of this template
 
 ```
