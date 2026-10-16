@@ -14,11 +14,20 @@ jobs:
       - name: Run the 99 hook tests (Windows PowerShell 5.1, sandboxed copies)
         shell: cmd
         run: powershell -NoProfile -ExecutionPolicy Bypass -File home\hooks\tests\run-all.ps1
+      - name: Run the 99 Python twins on Windows too (same cases, same verdicts)
+        shell: cmd
+        run: python -m unittest discover -v home\hooks\tests\py
       - name: Install into a throwaway folder and re-run the suite from there
         shell: cmd
         run: |
           mkdir %RUNNER_TEMP%\claude
           powershell -NoProfile -ExecutionPolicy Bypass -File install.ps1 -WorkRoot %RUNNER_TEMP%\Work -UserFirst Sam -ItemNoun ticket -ClaudeHome %RUNNER_TEMP%\claude
+      - name: Install again with -Python and run the installed Python suite
+        shell: cmd
+        run: |
+          mkdir %RUNNER_TEMP%\claude-py
+          powershell -NoProfile -ExecutionPolicy Bypass -File install.ps1 -WorkRoot %RUNNER_TEMP%\Work-py -UserFirst Sam -ItemNoun ticket -ClaudeHome %RUNNER_TEMP%\claude-py -Python
+          findstr /C:"hooks/py/voice-gate.py" %RUNNER_TEMP%\claude-py\settings.json
       - name: Switch and dashboard smoke test
         shell: cmd
         run: |
@@ -28,3 +37,21 @@ jobs:
       - name: Score the sample evals
         shell: cmd
         run: powershell -NoProfile -ExecutionPolicy Bypass -File evals\run-evals.ps1
+
+  hooks-python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Run the 99 hook tests (Python 3, sandboxed copies)
+        run: python3 -m unittest discover -v home/hooks/tests/py
+      - name: Every hook and test file is ASCII only
+        run: |
+          set -e
+          bad=0
+          for f in $(git ls-files 'home/hooks/*' 'home/settings*.json' 'install.ps1' 'INSTALL.md'); do
+            if LC_ALL=C grep -nP '[^\x00-\x7F]' "$f" >/dev/null; then echo "non-ASCII in $f"; bad=1; fi
+          done
+          exit $bad

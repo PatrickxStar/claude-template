@@ -1,6 +1,8 @@
 # install.ps1 - copy the template into ~/.claude and the work root, fill placeholders, run hook tests.
 #   powershell -ExecutionPolicy Bypass -File .\install.ps1 -WorkRoot "C:\Users\you\Work" -UserFirst "Sam" -ItemNoun ticket
 #   add -DryRun to preview. ASCII only (PowerShell 5.1 reads a BOM-less file as ANSI).
+#   add -Python to wire the Python hooks (settings.python.json becomes settings.json) and run
+#   the Python test suite instead of the PowerShell one. python3 must be on PATH.
 param(
     [Parameter(Mandatory = $true)][string]$WorkRoot,
     [Parameter(Mandatory = $true)][string]$UserFirst,
@@ -8,7 +10,8 @@ param(
     [string]$ItemNounPlural = '',
     [string]$ClaudeHome = (Join-Path $env:USERPROFILE '.claude'),
     [switch]$DryRun,
-    [switch]$SkipTests
+    [switch]$SkipTests,
+    [switch]$Python
 )
 $ErrorActionPreference = 'Stop'
 $here = Split-Path -Parent $MyInvocation.MyCommand.Path
@@ -60,6 +63,7 @@ Say "Template : $here"
 Say "Claude   : $ClaudeHome"
 Say "Work root: $WorkRoot"
 Say "Item noun: $ItemNoun / $ItemNounPlural"
+if ($Python) { Say "Hooks    : Python (settings.python.json -> settings.json)" } else { Say "Hooks    : PowerShell 5.1 (settings.json)" }
 if ($DryRun) { Say "DRY RUN - nothing is written" }
 
 # ---- 1. settings.json: back up, merge or park -------------------------------------
@@ -80,6 +84,12 @@ Say "Copying home\ -> $ClaudeHome"
 $tmpHome = Join-Path $env:TEMP ('claude-template-home-' + [guid]::NewGuid().ToString('N').Substring(0, 8))
 New-Item -ItemType Directory -Path $tmpHome -Force | Out-Null
 Copy-Item (Join-Path $homeSrc '*') $tmpHome -Recurse -Force
+# one settings file goes in: the PowerShell wiring by default, the Python wiring with -Python
+if ($Python) {
+    Move-Item (Join-Path $tmpHome 'settings.python.json') (Join-Path $tmpHome 'settings.json') -Force
+} else {
+    Remove-Item (Join-Path $tmpHome 'settings.python.json') -Force -ErrorAction SilentlyContinue
+}
 if ($parkSettings) {
     Move-Item (Join-Path $tmpHome 'settings.json') (Join-Path $tmpHome 'settings.hooks-template.json') -Force
     Say "settings.json already has a hooks section - ours is written as settings.hooks-template.json. Merge the hooks block by hand."
@@ -107,11 +117,25 @@ Say "        Copy $ClaudeHome\memory-template\* into that folder the first time 
 
 # ---- 5. hook tests -----------------------------------------------------------------
 if (-not $DryRun -and -not $SkipTests) {
-    $runAll = Join-Path $ClaudeHome 'hooks\tests\run-all.ps1'
-    if (Test-Path $runAll) {
-        Say ""
-        Say "Running hook tests..."
-        & powershell -NoProfile -ExecutionPolicy Bypass -File $runAll
+    if ($Python) {
+        $pyTests = Join-Path $ClaudeHome 'hooks\tests\py'
+        $py = Get-Command python3 -ErrorAction SilentlyContinue
+        if ($null -eq $py) { $py = Get-Command python -ErrorAction SilentlyContinue }
+        if ($null -eq $py) {
+            Say ""
+            Say "python3 is not on PATH - hook tests skipped. The hooks in settings.json need it too."
+        } elseif (Test-Path $pyTests) {
+            Say ""
+            Say "Running Python hook tests..."
+            & $py.Source -m unittest discover $pyTests
+        }
+    } else {
+        $runAll = Join-Path $ClaudeHome 'hooks\tests\run-all.ps1'
+        if (Test-Path $runAll) {
+            Say ""
+            Say "Running hook tests..."
+            & powershell -NoProfile -ExecutionPolicy Bypass -File $runAll
+        }
     }
 }
 

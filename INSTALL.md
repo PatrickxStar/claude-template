@@ -2,9 +2,32 @@
 
 ## What you need
 
-- Windows with PowerShell 5.1 (the hooks are written for it; nothing else is required)
+- Windows with PowerShell 5.1, or Mac / Linux with Python 3 (3.8 or newer) on PATH as `python3`
 - Claude Code desktop app or CLI, signed in to the account you want to teach
-- A folder for work items (the "work root"), for example `C:\Users\<you>\Work`
+- A folder for work items (the "work root"), for example `C:\Users\<you>\Work` or `~/Work`
+
+## Which settings file
+
+The six hooks ship twice, with the same behavior and the same test cases:
+
+| OS | Hooks | Settings file to install as `settings.json` |
+|---|---|---|
+| Windows | `home\hooks\*.ps1` (PowerShell 5.1) | `home\settings.json` |
+| Mac / Linux | `home/hooks/py/*.py` (Python 3, standard library only) | `home/settings.python.json` |
+| Windows with Python 3 | either; `install.ps1 -Python` picks the Python set | `home\settings.python.json` |
+
+Only one of the two goes in. The installer below handles it on Windows. On Mac / Linux there is
+no installer yet: copy `home/` to `~/.claude/`, rename `settings.python.json` to `settings.json`,
+delete the `.ps1` files if you like, and replace the placeholders by hand:
+
+```bash
+cd ~/.claude && grep -rl '__WORK_ROOT__\|__CLAUDE_HOME__\|__USER_FIRST__\|__ITEMS__\|__ITEM__' . \
+  | xargs sed -i.bak -e "s#__WORK_ROOT__#$HOME/Work#g" -e "s#__CLAUDE_HOME__#$HOME/.claude#g" \
+    -e "s#__USER_FIRST__#Sam#g" -e "s#__ITEMS__#tickets#g" -e "s#__ITEM__#ticket#g"
+```
+
+(On a Mac, `sed -i.bak` leaves `.bak` files next to the originals; delete them.) Then run the
+Python suite to prove the hooks are wired: `python3 -m unittest discover ~/.claude/hooks/tests/py`.
 
 ## Step 1 - run the installer
 
@@ -22,7 +45,8 @@ What it does:
 4. Creates the empty state, log and backup folders the hooks expect.
 5. Runs the hook tests and prints the tally.
 
-Add `-DryRun` to see every file it would write without writing anything.
+Add `-DryRun` to see every file it would write without writing anything. Add `-Python` to wire
+the Python hooks instead of the PowerShell ones (needs `python3` on PATH).
 
 ## Step 2 - make ~/.claude a local git repo (optional, recommended)
 
@@ -73,6 +97,6 @@ Move to Auto only once at least one playbook has VERIFY and REVERSE sections you
 
 ## Uninstall
 
-Delete `~\.claude\hooks\`, remove the `hooks` block from `settings.json`, delete the skills
-and agents you do not want. A missing hook script errors non-blockingly, so nothing breaks
+Delete `~\.claude\hooks\` (both the `.ps1` files and the `py\` folder), remove the `hooks` block
+from `settings.json`, delete the skills and agents you do not want. A missing hook script errors non-blockingly, so nothing breaks
 half way.

@@ -13,6 +13,8 @@
 !hooks/
 !hooks/*.ps1
 !hooks/*.md
+!hooks/py/
+!hooks/py/**
 !hooks/config/
 !hooks/config/**
 !hooks/tests/

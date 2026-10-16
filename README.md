@@ -18,7 +18,8 @@ unattended, extracted with every domain detail removed. The design choices it ca
   rules that get broken most: sending anything outward, naming back-end systems to a
   non-technical reader, hedging, leaving work in a transcript instead of on disk. Each has a
   cap so a bad rule cannot trap a session, and a 99-case test suite runs them against
-  synthesized events in a sandbox.
+  synthesized events in a sandbox. Each hook ships as PowerShell 5.1 for Windows and as a
+  Python 3 twin for Mac and Linux, with the same cases run against both.
 - **A tiered agent chain.** A strong model plans once and writes a runbook with expected
   results per step; a mid-tier model executes it literally and stops on the first mismatch; the
   cheapest model writes only the words, from facts, never from an earlier draft. A clean run
