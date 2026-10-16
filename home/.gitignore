@@ -6,6 +6,7 @@
 # --- what IS tracked ---
 !CLAUDE.md
 !settings.json
+!settings.python.json
 !skills/
 !skills/**
 !agents/

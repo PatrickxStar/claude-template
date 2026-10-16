@@ -1,0 +1,114 @@
+{
+  "permissions": {
+    "defaultMode": "default"
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3",
+            "args": ["__CLAUDE_HOME__/hooks/py/voice-gate.py"],
+            "timeout": 20
+          }
+        ]
+      },
+      {
+        "matcher": "Bash|PowerShell",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3",
+            "args": ["__CLAUDE_HOME__/hooks/py/command-guard.py"],
+            "timeout": 20
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3",
+            "args": ["__CLAUDE_HOME__/hooks/py/usage-context.py"],
+            "timeout": 20
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3",
+            "args": ["__CLAUDE_HOME__/hooks/py/usage-context.py"],
+            "timeout": 20
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3",
+            "args": ["__CLAUDE_HOME__/hooks/py/lesson-capture.py"],
+            "timeout": 20
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3",
+            "args": ["__CLAUDE_HOME__/hooks/py/disk-gate.py"],
+            "timeout": 20
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3",
+            "args": ["__CLAUDE_HOME__/hooks/py/disk-gate.py"],
+            "timeout": 20
+          }
+        ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3",
+            "args": ["__CLAUDE_HOME__/hooks/py/plain-talk-gate.py"],
+            "timeout": 20
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "matcher": "planner|runner|writer",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3",
+            "args": ["__CLAUDE_HOME__/hooks/py/disk-gate.py"],
+            "timeout": 20
+          }
+        ]
+      }
+    ]
+  },
+  "effortLevel": "medium"
+}
