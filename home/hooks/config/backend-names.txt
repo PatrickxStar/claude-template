@@ -1,0 +1,15 @@
+# backend-names.txt - read by voice-gate.ps1.
+# One word or phrase per line (regex, .NET, case-insensitive, matched on a word boundary).
+# A draft for a non-technical reader (bucket A, B, D or E) is refused if it names any of these.
+# Bucket C (technical peer) and notes addressed to you are exempt.
+#
+# Put the names of your plumbing here: databases, auth providers, queues, cloud services,
+# table names, the word "API" if your readers do not use it. Examples:
+#
+# SQL
+# API
+# Postgres
+# Redis
+# Kubernetes
+# S3 bucket
+# Elastic(?:search)?

@@ -1,0 +1,11 @@
+{
+  "placeholders": {
+    "__WORK_ROOT__":   "Folder that holds one subfolder per work item, e.g. C:\\Users\\you\\Work",
+    "__CLAUDE_HOME__": "Your ~/.claude folder, e.g. C:\\Users\\you\\.claude",
+    "__USER_FIRST__":  "Your first name, used in notes addressed to you",
+    "__ITEM__":        "Singular noun for one unit of work: ticket, case, request, task",
+    "__ITEMS__":       "Plural of the above"
+  },
+  "textExtensions": [".md", ".ps1", ".json", ".jsonl", ".txt", ".sh", ".py"],
+  "reservedWorkFolders": ["system", "reports", "archive", "adhoc"]
+}

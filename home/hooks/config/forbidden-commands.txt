@@ -1,0 +1,14 @@
+# forbidden-commands.txt - read by command-guard.ps1 on every Bash / PowerShell call.
+# One rule per line:   <regex><TAB><reason shown to the model>
+# Regex is .NET, case-insensitive. Lines starting with # are ignored. Keep this file ASCII.
+#
+# Fill in the commands that must never run from a Claude session: a production server
+# name, a destructive verb, a deploy command, a payment call. Examples (commented out):
+#
+# \b(prod-sql-01|prodserver)\b	That server is off limits from Claude. Use the read-only copy.
+# \bgit\s+push\s+(-f|--force)\b	Never force-push. Open a PR instead.
+# \bRemove-Item\b[^|;]*-Recurse[^|;]*\\(Users|Program Files)\\	Never recursive-delete under a system folder.
+# \bterraform\s+(apply|destroy)\b	Infrastructure changes are a person's click.
+
+# --- always on: the model never sends mail from a shell ---
+\.Send\(\)|Send-MailMessage|\.SendAndSaveCopy\(	Never send. Compose with .Display() and let __USER_FIRST__ click send.

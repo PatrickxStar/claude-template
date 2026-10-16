@@ -1,0 +1,11 @@
+# hedge-words.txt - read by voice-gate.ps1 (drafts) and plain-talk-gate.ps1 (the last message of a turn).
+# One regex per line (.NET, case-insensitive). A match refuses the draft or blocks the stop.
+# These are the "how sure am I" phrases. Keep the \b word edges so "unlikely" does not match "likely".
+\bconfidence\b
+\bconfident\b
+\bi'?m sure\b
+\bi am sure\b
+\blikely\b
+\bprobably\b
+\bmost likely\b
+\b(high|medium|low) confidence\b

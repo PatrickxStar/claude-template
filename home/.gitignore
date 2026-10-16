@@ -1,0 +1,60 @@
+# Local-only history for this Claude Code setup. No remote, never pushed.
+# Whitelist approach: ignore everything, then allow exactly the folders that hold the work.
+*
+!.gitignore
+
+# --- what IS tracked ---
+!CLAUDE.md
+!settings.json
+!skills/
+!skills/**
+!agents/
+!agents/**
+!hooks/
+!hooks/*.ps1
+!hooks/*.md
+!hooks/config/
+!hooks/config/**
+!hooks/tests/
+!hooks/tests/**
+!scheduled-tasks/
+!scheduled-tasks/**
+!memory-template/
+!memory-template/**
+!projects/
+!projects/*/
+!projects/*/memory/
+!projects/*/memory/**
+
+# --- re-exclude inside the tracked areas ---
+.credentials.json
+*.jsonl
+projects/*/*/
+!projects/*/memory/
+tool-results/
+shell-snapshots/
+statsig/
+todos/
+ide/
+debug/
+logs/
+hooks/state/
+hooks/logs/
+hooks/backups/
+plugins/cache/
+*.bak*
+skills/*/state/
+skills/synced/
+__pycache__/
+
+# anything whose name says it holds a credential
+*secret*
+*credential*
+*apikey*
+*api-key*
+*token*.json
+*password*.json
+*.pem
+*.key
+*.p12
+*.pfx
