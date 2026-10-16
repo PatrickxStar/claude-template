@@ -46,9 +46,7 @@ __WORK_ROOT__\
     |-- voice-checklist.md      how __USER_FIRST__ writes (fill in)
     |-- known-noise.md          what is never worked (fill in)
     |-- autopilot-log.md        every unattended write, one line, prior value + reversal
-    |-- playbooks\              one file per fix that may run on its own
-    |-- auto\                   deterministic scripts (sync, watchers) - no model
-    `-- reference\              endpoint tables, the $env: secrets convention
+    `-- playbooks\              one file per fix that may run on its own
 ```
 
 Reserved folder names under the root: `system`, `reports`, `archive`, `adhoc`. Everything

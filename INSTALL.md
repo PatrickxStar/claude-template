@@ -62,12 +62,19 @@ model makes to itself, so a bad edit is one `git checkout` away.
 
 Open these and replace the examples with your own (each file explains itself):
 
-- `~\.claude\CLAUDE.md`
-- `~\.claude\hooks\config\forbidden-commands.txt`
-- `~\.claude\hooks\config\backend-names.txt`
-- `~\.claude\hooks\config\hedge-words.txt`
-- `<WorkRoot>\system\voice-checklist.md`
-- `<WorkRoot>\system\known-noise.md`
+| File | What you put there |
+|---|---|
+| `~\.claude\CLAUDE.md` | Your talk-to-me rules, your systems by name, your folders |
+| `~\.claude\hooks\config\forbidden-commands.txt` | Commands the shell must never run (one regex per line, tab, reason) |
+| `~\.claude\hooks\config\backend-names.txt` | System names that must never appear in a reply to a non-technical reader |
+| `~\.claude\hooks\config\hedge-words.txt` | The "how sure I am" words you do not want to read |
+| `<WorkRoot>\system\voice-checklist.md` | How you actually write: openers, closers, length, stock lines |
+| `<WorkRoot>\system\known-noise.md` | Things that look like work but are not |
+
+Later, as the work shows you what repeats: one playbook per fix that may run on its own
+(`<WorkRoot>\system\playbooks\`, copy `_template.md`) and one skill per recurring job
+(`~\.claude\skills\`, copy `_skill-template`). Memory grows on its own through
+`lesson-capture` and `/lesson-review`.
 
 ## Step 4 - seed the memory folder
 

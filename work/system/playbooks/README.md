@@ -27,7 +27,7 @@ a `draft-to-<first>.txt` / `draft-escalation.txt` for each other person the fix 
 ## Secrets (the $env: convention)
 
 Every token a playbook needs is read from a User environment variable __USER_FIRST__ set
-themselves - see `system\reference\api-endpoints.md` for the table. Rules:
+themselves (`[Environment]::SetEnvironmentVariable('<NAME>', '<value>', 'User')`, once). Rules:
 - A playbook names the VARIABLE, never a value. No token ever lands in a playbook, an __ITEM__
   folder, the autopilot log, a run report or chat.
 - Inside a Claude tool `$env:NAME` is a COPY taken when the app started: empty before it was

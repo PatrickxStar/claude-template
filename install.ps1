@@ -113,7 +113,7 @@ if (-not $DryRun) {
 # ---- 3. copy work/ -----------------------------------------------------------------
 Say "Copying work\ -> $WorkRoot"
 Copy-Tree (Join-Path $here 'work') $WorkRoot
-foreach ($d in @('reports', 'archive', 'system\auto', 'system\playbooks', 'system\reference')) {
+foreach ($d in @('reports', 'archive', 'system\playbooks')) {
     $p = Join-Path $WorkRoot $d
     if (-not $DryRun -and -not (Test-Path $p)) { New-Item -ItemType Directory -Path $p -Force | Out-Null }
 }

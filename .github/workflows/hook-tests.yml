@@ -8,9 +8,9 @@ on:
 
 jobs:
   hooks:
-    runs-on: windows-latest
+    runs-on: windows-2022
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Run the 99 hook tests (Windows PowerShell 5.1, sandboxed copies)
         shell: cmd
         run: powershell -NoProfile -ExecutionPolicy Bypass -File home\hooks\tests\run-all.ps1
@@ -22,6 +22,7 @@ jobs:
         run: |
           mkdir %RUNNER_TEMP%\claude
           powershell -NoProfile -ExecutionPolicy Bypass -File install.ps1 -WorkRoot %RUNNER_TEMP%\Work -UserFirst Sam -ItemNoun ticket -ClaudeHome %RUNNER_TEMP%\claude
+          findstr /C:"hooks/voice-gate.ps1" %RUNNER_TEMP%\claude\settings.json
       - name: Install again with -Python and run the installed Python suite
         shell: cmd
         run: |
@@ -34,15 +35,15 @@ jobs:
           powershell -NoProfile -ExecutionPolicy Bypass -File %RUNNER_TEMP%\Work\system\toggle-automation.ps1 -Mode Auto
           powershell -NoProfile -ExecutionPolicy Bypass -File %RUNNER_TEMP%\Work\system\toggle-automation.ps1 -Mode Off
           powershell -NoProfile -ExecutionPolicy Bypass -File %RUNNER_TEMP%\Work\generate-dashboard.ps1
-      - name: Score the sample evals
+      - name: Score the sample evals (fails on a FAIL, and when no case ran)
         shell: cmd
         run: powershell -NoProfile -ExecutionPolicy Bypass -File evals\run-evals.ps1
 
   hooks-python:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: '3.x'
       - name: Run the 99 hook tests (Python 3, sandboxed copies)

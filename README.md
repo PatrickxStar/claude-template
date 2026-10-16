@@ -72,17 +72,6 @@ flowchart LR
     end
 ```
 
-## How it works in one paragraph
-
-A scheduled run wakes up, checks the switch (Off = stop, On = draft only, Auto = also
-execute reversible fixes that have a playbook), checks the budget, takes a lock so two runs
-never collide, and builds the work list. For each item the Planner writes a runbook with
-exact steps and expected results, the Runner executes it and stops on the first mismatch,
-the Writer drafts every reply in your voice from the facts alone, and everything lands on
-disk in the item's folder. You review, copy, click, send. Sending is always your click.
-Hooks make sure drafts match your voice, work reaches disk, nothing is sent, and your
-corrections get captured as lessons for memory.
-
 ## Install
 
 See `INSTALL.md`. Short version:
@@ -90,20 +79,6 @@ See `INSTALL.md`. Short version:
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\install.ps1 -WorkRoot "C:\Users\<you>\Work" -UserFirst "<Your first name>" -ItemNoun ticket
 ```
-
-## Fill in as you go
-
-| File | What you put there |
-|---|---|
-| `~/.claude/CLAUDE.md` | Your talk-to-me rules, your systems by name, your folders |
-| `~/.claude/hooks/config/forbidden-commands.txt` | Commands the shell must never run (one regex per line, tab, reason) |
-| `~/.claude/hooks/config/backend-names.txt` | System names that must never appear in a reply to a non-technical reader |
-| `~/.claude/hooks/config/hedge-words.txt` | The "how sure I am" words you do not want to read |
-| `<WorkRoot>\system\voice-checklist.md` | How you actually write: openers, closers, length, stock lines |
-| `<WorkRoot>\system\playbooks\` | One file per fix that may run on its own (copy `_template.md`) |
-| `<WorkRoot>\system\known-noise.md` | Things that look like work but are not |
-| `~/.claude/skills/` | One skill per recurring job (copy `_skill-template`) |
-| Memory | Grows on its own through `lesson-capture` + `/lesson-review` |
 
 ## Ground rules baked into every file
 
@@ -142,5 +117,5 @@ claude-template\
 `-- work\                   -> <WorkRoot>\
     |-- README.md           folder contract, summary.json contract, how fixes are delivered
     |-- generate-dashboard.ps1
-    `-- system\             switch, voice checklist, known noise, playbooks\, auto\, reference\
+    `-- system\             switch, voice checklist, known noise, playbooks\
 ```

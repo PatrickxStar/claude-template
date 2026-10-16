@@ -16,7 +16,10 @@ Each case is a folder under `cases\` holding:
 `score-runbook.ps1` reads one runbook against its `expected.json` and prints a line per
 check (PASS / FAIL / SKIP) and a score. `run-evals.ps1` does that for every case and prints
 a table plus the overall pass rate. A case with no `runbook.md` yet is reported as
-NOT-RUN, never as a failure, so the suite is honest about coverage.
+NOT-RUN rather than as a failure, so the suite is honest about coverage; a suite where no
+case ran at all exits 1, so an empty eval can never show green. The two sample cases ship
+with their runbooks, so CI scores them on every push. Regenerate a runbook after changing
+the planner and commit the new one with the change.
 
 ## Producing a runbook for a case
 

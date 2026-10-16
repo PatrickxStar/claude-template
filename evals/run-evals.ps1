@@ -16,4 +16,6 @@ $run = @($rows | Where-Object { $_.status -eq 'PASS' -or $_.status -eq 'FAIL' })
 $passed = @($run | Where-Object { $_.status -eq 'PASS' }).Count
 Write-Output ("EVALS: {0} cases, {1} run, {2} passed, {3} not run" -f $rows.Count, $run.Count, $passed, ($rows.Count - $run.Count))
 if (@($run | Where-Object { $_.status -eq 'FAIL' }).Count -gt 0) { exit 1 }
+# a suite where nothing ran proves nothing - a NOT-RUN case is reported, but zero runs is a failure
+if ($run.Count -eq 0) { Write-Output 'EVALS: no case has a runbook.md - nothing was scored'; exit 1 }
 exit 0

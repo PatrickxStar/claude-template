@@ -31,8 +31,7 @@ foreach ($d in (Get-ChildItem $root -Directory | Where-Object { $reserved -notco
         $items += [pscustomobject]@{ id = $d.Name; title = '(summary.json does not parse)'; status = 'open'; lane = 'call'; synopsis = 'fix the JSON'; action = ''; updated = $d.LastWriteTime.ToString('s'); folder = $d.FullName }
     }
 }
-if (-not $items[0].id) { }
-$open = @($items | Where-Object { $_.status -ne 'done' })
+$open =@($items | Where-Object { $_.status -ne 'done' })
 $done = @($items | Where-Object { $_.status -eq 'done' } | Sort-Object updated -Descending | Select-Object -First 10)
 
 function Lane-Rows($lane) {

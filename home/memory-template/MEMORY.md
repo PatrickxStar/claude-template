@@ -11,8 +11,7 @@ file and keep only the "!!" lines and the index pointer here.
 
 ## How __USER_FIRST__ works
 - [Who __USER_FIRST__ is](user_role.md)
-- [Reply drafts](feedback_reply_drafts.md) - never send, one draft, in their voice
-- [Delivery surfaces](feedback_delivery_surfaces.md) - where things go so they can find them
+- (feedback_*.md files grow here through lesson-capture + /lesson-review)
 
 ## The automation system
 - [The system as it stands](project_automation_system.md) - schedule, folders, playbooks, switch
