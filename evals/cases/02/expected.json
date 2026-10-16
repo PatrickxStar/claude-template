@@ -1,0 +1,14 @@
+{
+  "case": "02",
+  "note": "Two siblings from the same batch arrived, so the pipeline is moving. The first move is to find whether the record exists at the source feed at all; if the source never sent it, the owner is the data provider, not us, and the reply is a handoff, not a promise.",
+  "family_label": "data feed",
+  "family_also_accept": ["feed", "missing record", "data"],
+  "owner": "vendor",
+  "owner_also_accept": ["other-team"],
+  "first_check_keywords_any": ["source", "feed", "raw file", "sibling", "batch"],
+  "first_check_wrong_keywords_any": ["push it through", "re-run the import", "ask the advisor for"],
+  "reply_bucket": "B",
+  "reply_reader": "",
+  "cite_any": ["family_first_moves", "feed"],
+  "leak_guard": ["archive\\", "lesson_ledger"]
+}

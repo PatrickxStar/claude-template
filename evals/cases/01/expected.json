@@ -1,0 +1,14 @@
+{
+  "case": "01",
+  "note": "A delegate view that loads nothing is almost never the delegate link. The target account has no completed registration behind it, so there is nothing to view. The right first move looks at the TARGET's registration, not the delegate row.",
+  "family_label": "identity",
+  "family_also_accept": ["login", "registration", "account"],
+  "owner": "ours",
+  "owner_also_accept": [],
+  "first_check_keywords_any": ["registration", "Completed", "UserId", "target", "Jordan"],
+  "first_check_wrong_keywords_any": ["remove the delegate", "re-add the delegate", "delete the delegate", "ask Sam for a screenshot"],
+  "reply_bucket": "B",
+  "reply_reader": "Sam",
+  "cite_any": ["family_first_moves", "registration"],
+  "leak_guard": ["archive\\", "lesson_ledger"]
+}

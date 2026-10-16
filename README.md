@@ -1,5 +1,7 @@
 # Claude Autonomous System Template
 
+[![hook tests](https://github.com/PatrickxStar/claude-template/actions/workflows/hook-tests.yml/badge.svg)](https://github.com/PatrickxStar/claude-template/actions/workflows/hook-tests.yml)
+
 A blank copy of a working autonomous Claude Code setup: hooks that enforce the hard
 rules, a memory system that learns, a three-agent chain that works a queue of items
 while nobody watches, a work folder with an Off / On / Auto switch, and scheduled runs.
@@ -30,6 +32,10 @@ unattended, extracted with every domain detail removed. The design choices it ca
   actually sent, and repeated differences become rules.
 - **Human sign-off by construction.** The person is the last step of every chain. Nothing is
   sent, merged, or run against money without their click.
+- **Evals for drift.** Labeled synthetic cases score the Planner's output on family, owner,
+  first check, audience and citations, with a leak guard that catches a plan that was really
+  a lookup. CI runs the hook suite, an install, the switch, the dashboard and the evals on
+  every push.
 
 ## The seven pieces
 
@@ -42,6 +48,28 @@ unattended, extracted with every domain detail removed. The design choices it ca
 | Agents | `~/.claude/agents/` | Planner (strong model, thinks) -> Runner (cheap model, executes exactly) -> Writer (cheapest, words only) -> you |
 | Work root | `<WorkRoot>\` | One folder per work item, `summary.json` per folder, playbooks for fixes that may run on their own, the Off / On / Auto switch |
 | Scheduled tasks | `~/.claude/scheduled-tasks/` | The prompts that fire on a timer inside the Claude desktop app |
+
+## How a run flows
+
+```mermaid
+flowchart LR
+    T[Timer or /work-queue] --> G{Switch<br/>Off / On / Auto}
+    G -- Off --> X[stop]
+    G -- On / Auto --> L[Run lock + budget]
+    L --> W[Work list:<br/>open items + stubs]
+    W --> P[Planner<br/>strong model<br/>writes runbook.md]
+    P --> R[Runner<br/>mid model<br/>executes, stops on MISMATCH]
+    R -- MISMATCH --> P
+    R -- AUTO playbook,<br/>mode Auto --> A[(execute + log<br/>prior value + reverse)]
+    R -- everything else --> S[(stage for a person)]
+    R --> Wr[Writer<br/>cheapest model<br/>drafts from facts only]
+    Wr --> H[Person reviews,<br/>copies, clicks, sends]
+    H -. sent reply .-> M[Mirror: draft vs sent<br/>-> voice rules]
+    H -. corrections .-> Mem[lesson-capture -> memory]
+    subgraph Hooks around every tool call
+        c1[command-guard] ~~~ c2[voice-gate] ~~~ c3[disk-gate] ~~~ c4[plain-talk-gate]
+    end
+```
 
 ## How it works in one paragraph
 
@@ -99,6 +127,8 @@ claude-template\
 |-- INSTALL.md              step by step
 |-- install.ps1             copies, fills placeholders, runs the hook tests
 |-- template.config.json    the placeholder list
+|-- .github\workflows\      CI: the hook tests, an install into a throwaway folder, the switch, the dashboard, the evals
+|-- evals\                  labeled cases that score the Planner's runbooks for drift (see evals\README.md)
 |-- home\                   -> ~\.claude\
 |   |-- CLAUDE.md
 |   |-- settings.json       hook wiring

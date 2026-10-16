@@ -1,0 +1,5 @@
+Subject: Can't see Jordan's account from my login
+
+Hi, I was added as a delegate for Jordan Vale last week so I can view their account, but when
+I pick them from the dropdown nothing loads - just a blank page. I already tried signing out
+and back in and clearing my cache. Can you fix the delegate link? Thanks, Sam

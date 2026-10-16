@@ -1,0 +1,30 @@
+name: hook tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  hooks:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run the 99 hook tests (Windows PowerShell 5.1, sandboxed copies)
+        shell: cmd
+        run: powershell -NoProfile -ExecutionPolicy Bypass -File home\hooks\tests\run-all.ps1
+      - name: Install into a throwaway folder and re-run the suite from there
+        shell: cmd
+        run: |
+          mkdir %RUNNER_TEMP%\claude
+          powershell -NoProfile -ExecutionPolicy Bypass -File install.ps1 -WorkRoot %RUNNER_TEMP%\Work -UserFirst Sam -ItemNoun ticket -ClaudeHome %RUNNER_TEMP%\claude
+      - name: Switch and dashboard smoke test
+        shell: cmd
+        run: |
+          powershell -NoProfile -ExecutionPolicy Bypass -File %RUNNER_TEMP%\Work\system\toggle-automation.ps1 -Mode Auto
+          powershell -NoProfile -ExecutionPolicy Bypass -File %RUNNER_TEMP%\Work\system\toggle-automation.ps1 -Mode Off
+          powershell -NoProfile -ExecutionPolicy Bypass -File %RUNNER_TEMP%\Work\generate-dashboard.ps1
+      - name: Score the sample evals
+        shell: cmd
+        run: powershell -NoProfile -ExecutionPolicy Bypass -File evals\run-evals.ps1
