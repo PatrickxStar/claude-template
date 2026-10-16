@@ -7,6 +7,30 @@ while nobody watches, a work folder with an Off / On / Auto switch, and schedule
 Nothing in here knows your job. Every domain word is a placeholder or a config file you
 fill in as you go. Install it, then teach it your work one correction at a time.
 
+## What this demonstrates
+
+This is the reusable shape of a production agent system that works a support queue
+unattended, extracted with every domain detail removed. The design choices it carries:
+
+- **Guardrails as code, not prose.** Six hook scripts run around every tool call and block the
+  rules that get broken most: sending anything outward, naming back-end systems to a
+  non-technical reader, hedging, leaving work in a transcript instead of on disk. Each has a
+  cap so a bad rule cannot trap a session, and a 99-case test suite runs them against
+  synthesized events in a sandbox.
+- **A tiered agent chain.** A strong model plans once and writes a runbook with expected
+  results per step; a mid-tier model executes it literally and stops on the first mismatch; the
+  cheapest model writes only the words, from facts, never from an earlier draft. A clean run
+  costs one expensive turn.
+- **A safety envelope with reversibility.** An action runs on its own only when it is
+  reversible, has a written playbook with preconditions, VERIFY and REVERSE sections, the prior
+  value is recorded, and the switch is set to Auto. Everything else is staged for a person.
+  Money, bulk changes and deletes are never automated.
+- **A learning loop.** Corrections are captured by a hook, reviewed by a person, and saved as
+  one-fact-per-file memories with the why. What was drafted is compared against what was
+  actually sent, and repeated differences become rules.
+- **Human sign-off by construction.** The person is the last step of every chain. Nothing is
+  sent, merged, or run against money without their click.
+
 ## The seven pieces
 
 | Piece | Where it lands | What it does |
