@@ -41,20 +41,26 @@ function Fill([string]$text, [bool]$forJson) {
     return $text
 }
 function Copy-Tree([string]$srcRoot, [string]$dstRoot) {
-    Get-ChildItem $srcRoot -Recurse -File -Force | ForEach-Object {
-        $rel = $_.FullName.Substring($srcRoot.Length).TrimStart('\')
+    # -Name gives the path relative to $srcRoot straight from the cmdlet. Never slice FullName by the
+    # root's length: when the root is a short 8.3 path (C:\Users\RUNNER~1\... on a GitHub runner),
+    # FullName comes back in long form and the slice lands every file in the wrong folder, silently.
+    Get-ChildItem $srcRoot -Recurse -File -Force -Name | ForEach-Object {
+        $rel = $_
+        $src = Join-Path $srcRoot $rel
+        $name = Split-Path $rel -Leaf
+        $ext = [System.IO.Path]::GetExtension($name).ToLower()
         $dst = Join-Path $dstRoot $rel
         $dstDir = Split-Path $dst -Parent
-        $isText = ($textExt -contains $_.Extension.ToLower()) -or ($_.Name -eq '.gitignore') -or ($_.Name -eq '.keep')
+        $isText = ($textExt -contains $ext) -or ($name -eq '.gitignore') -or ($name -eq '.keep')
         if ($DryRun) { Say ("[dry] " + $dst); return }
         if (-not (Test-Path $dstDir)) { New-Item -ItemType Directory -Path $dstDir -Force | Out-Null }
         if ($isText) {
-            $t = [System.IO.File]::ReadAllText($_.FullName, [System.Text.Encoding]::UTF8)
+            $t = [System.IO.File]::ReadAllText($src, [System.Text.Encoding]::UTF8)
             # UTF-8 with BOM so PowerShell 5.1 reads the file as UTF-8 even if a non-ASCII character sneaks in
-            $isJson = ($_.Extension.ToLower() -eq '.json')
+            $isJson = ($ext -eq '.json')
             [System.IO.File]::WriteAllText($dst, (Fill $t $isJson), (New-Object System.Text.UTF8Encoding($true)))
         } else {
-            Copy-Item $_.FullName $dst -Force
+            Copy-Item $src $dst -Force
         }
     }
 }
@@ -96,6 +102,13 @@ if ($parkSettings) {
 }
 Copy-Tree $tmpHome $ClaudeHome
 Remove-Item $tmpHome -Recurse -Force -ErrorAction SilentlyContinue
+if (-not $DryRun) {
+    # fail loud, never a quiet install that put nothing where Claude Code looks
+    $landed = if ($parkSettings) { 'settings.hooks-template.json' } else { 'settings.json' }
+    foreach ($must in @($landed, 'CLAUDE.md', 'hooks\tests')) {
+        if (-not (Test-Path (Join-Path $ClaudeHome $must))) { throw "install: $must did not land in $ClaudeHome" }
+    }
+}
 
 # ---- 3. copy work/ -----------------------------------------------------------------
 Say "Copying work\ -> $WorkRoot"
